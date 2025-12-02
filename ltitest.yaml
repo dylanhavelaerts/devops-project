@@ -34,8 +34,7 @@ services:
     env_file: ".env"
     environment:
       SESSION_SECRET: ${SESSION_SECRET}
-      CONSUMER_KEY: ${CONSUMER_KEY}
-      SHARED_SECRET: ${SHARED_SECRET}
+      OAUTH_SECRET: ${OAUTH_SECRET}
     ports:
       - 5000:5000
     restart: always
