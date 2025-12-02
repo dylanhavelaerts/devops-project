@@ -28,6 +28,18 @@ services:
       - mariadb
     restart: always
 
+  ltitool:
+    build: ltitool
+    container_name: ltitool
+    env_file: ".env"
+    environment:
+      SESSION_SECRET: ${SESSION_SECRET}
+      CONSUMER_KEY: ${CONSUMER_KEY}
+      SHARED_SECRET: ${SHARED_SECRET}
+    ports:
+      - 5000:5000
+    restart: always
+
 volumes:
   mariadb_data:
     driver: local
