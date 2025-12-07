@@ -1,1 +1,21 @@
+## Python ignores
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+dist/
+build/
+
+## Environment secrets ignores
 .env
+
+## Certificates
+traefik/certificates/*.pem
+traefik/certificates/*.key
+
+# Docker volumes
+volumes/
+*.log

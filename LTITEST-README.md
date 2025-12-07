@@ -1,0 +1,12 @@
+In deze README.md wordt er uitgelegd hoe je een ltitool kan toevoegen aan je test moodle.
+- Log in op de moodle (http://<ip>:8080/)
+- Maak een cursus aan
+- Ga naar more en dan LTI external tools
+- Add nu een LTI tool met de volgende parameters 
+    - tool name = (eigen keuze, wij zullen de naam: "mijntool" gebruiken)
+    - tool url = http://<ip>>:5000
+    - consumer key = (eigen keuze key)
+    - shared secret -> staat in .env file
+- Als dit is toegevoegd ga je terug naar de cursus hoofdpagina in developer mode, hierna klik je op "Add an activity"
+- Je voegt hier nu je tool toe (mijntool)
+- Save en Display

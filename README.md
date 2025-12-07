@@ -20,3 +20,18 @@ Voor de projectopdracht 25-26 zet je een Moodle 4.4 installatie op op je Bletchl
 	- automatiseren van de installatie van een Moodle plugin
 	- health checks voor de hele setup
 Vrijwel alles wat je hiervoor moet doen staat op Docker Hub en in de documentatie van Jenkins en Traefik. Secundaire bronnen zijn niet even betrouwbaar. Je mag LLM's gebruiken maar je moet de dwaalsporen erbij nemen.
+
+-- EIGEN README.me --
+[Benodigede Setup]
+We zullen alvast een paar certificaten moeten toevoegen aan /etc/hosts op onze lokale omgeving
+  - 127.0.0.1 traefik.local moodle.local ltitool.local
+
+Op onze eigen lokale omgeving zullen we ook een tunnel moeten opzetten om onze sites te kunnen bereiken.
+  - ssh -L 443:localhost:443 -L 80:localhost:80 student@<IP>
+
+Eenmaal we hierna onze docker compose opzetten zullen we volgende https sites kunnen bereiken,
+  - https://traefik.local/
+  - https://moodle.local/
+
+
+

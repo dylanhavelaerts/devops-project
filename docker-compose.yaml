@@ -1,1 +1,98 @@
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/etc/traefik/certificates"
+      - "--providers.file.watch=true"
+      - "--api.dashboard=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesResolvers.default.acme.email=none"
+      - "--certificatesResolvers.default.acme.storage=/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./traefik/certificates:/etc/traefik/certificates:ro
+      - ./traefik/certificates:/certs:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.local`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.service=api@internal" ## traefik dashboard 
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+    networks:
+      - proxy
 
+  moodle:
+    image: bitnamilegacy/moodle:4.4
+    container_name: moodle
+    environment:
+      - MOODLE_DATABASE_HOST=mariadb
+      - MOODLE_DATABASE_USER=bn_moodle
+      - MOODLE_DATABASE_NAME=bitnami_moodle
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MOODLE_SITE_NAME=DylanHavelaertsMoodle
+      - MOODLE_SITE_URL=https://moodle.local
+    volumes:
+      - moodle_data:/bitnami/moodle
+      - moodledata_data:/bitnami/moodledata
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.moodle.rule=Host(`moodle.local`)"
+      - "traefik.http.routers.moodle.entrypoints=websecure"
+      - "traefik.http.routers.moodle.tls=true"
+      - "traefik.http.services.moodle.loadbalancer.server.port=8080"
+      - "traefik.http.services.moodle.loadbalancer.server.scheme=http" ## moodle kan alleen maar http connectie maken op de backend
+    depends_on:
+      - mariadb
+    networks:
+      - internal
+      - proxy
+
+  mariadb:
+    image: bitnamilegacy/mariadb:10.11.9
+    container_name: mariadb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_moodle
+      - MARIADB_DATABASE=bitnami_moodle
+    volumes:
+      - mariadb_data:/bitnami/mariadb
+    networks:
+      - internal
+
+  ltitool:
+    build: ./ltitool
+    container_name: ltitool
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ltitool.rule=Host(`ltitool.local`)"
+      - "traefik.http.routers.ltitool.entrypoints=websecure"
+      - "traefik.http.routers.ltitool.tls=true"
+      - "traefik.http.services.ltitool.loadbalancer.server.port=5000"
+      - "traefik.http.services.ltitool.loadbalancer.server.scheme=http" ## ltitool kan alleen maar http connectie maken op de backend
+    env_file: ".env"
+    environment:
+      SESSION_SECRET: ${SESSION_SECRET}
+      OAUTH_SECRET: ${OAUTH_SECRET}
+    networks:
+      - internal
+      - proxy
+
+volumes:
+  mariadb_data:
+  moodle_data:
+  moodledata_data:
+
+networks:
+  internal:
+    driver: bridge
+  proxy:
+    external: false
