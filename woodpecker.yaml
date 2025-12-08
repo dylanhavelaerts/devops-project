@@ -1,0 +1,33 @@
+when:
+  - event: push
+    branch: main
+
+steps:
+  - name: build-lti
+    image: docker/compose:latest ## docker compose commandos pre-installed
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - docker compose build ltitool
+
+  - name: push-to-dockerhub
+    image: docker/compose:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets: [docker_user, docker_pw]
+    commands:
+      - echo $DOCKER_PW | docker login -u $DOCKER_USER --password-stdin  ## stdin is veiliger dan docker login -u
+      - docker tag ltitool $DOCKER_USER/ltitool:latest
+      - docker push $DOCKER_USER/ltitool:latest
+    when:
+      branch: main
+
+  - name: deploy
+    image: docker/compose:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - docker compose pull ltitool
+      - docker compose up -d
+    when:
+      branch: main
