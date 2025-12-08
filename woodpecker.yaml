@@ -17,7 +17,7 @@ steps:
     secrets: [docker_user, docker_pw]
     commands:
       - echo $DOCKER_PW | docker login -u $DOCKER_USER --password-stdin  ## stdin is veiliger dan docker login -u
-      - docker tag ltitool $DOCKER_USER/ltitool:latest
+      - docker tag doorlopende-projectopdracht-dylanhavelaerts-ltitool $DOCKER_USER/ltitool:latest
       - docker push $DOCKER_USER/ltitool:latest
     when:
       branch: main
