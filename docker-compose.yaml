@@ -29,7 +29,8 @@ services:
       - MOODLE_DATABASE_HOST=mariadb
       - MOODLE_DATABASE_USER=bn_moodle
       - MOODLE_DATABASE_NAME=bitnami_moodle
-      - ALLOW_EMPTY_PASSWORD=yes
+      - MOODLE_DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
       - MOODLE_SITE_NAME="Dylan Havelaerts Moodle"
       - MOODLE_SITE_URL=https://moodle.local
     volumes:
@@ -42,6 +43,7 @@ services:
       - "traefik.http.routers.moodle.tls=true"
       - "traefik.http.services.moodle.loadbalancer.server.port=8080"
       - "traefik.http.services.moodle.loadbalancer.server.scheme=http" ## moodle kan alleen maar http connectie maken op de backend
+      - "traefik.docker.network=doorlopende-projectopdracht-dylanhavelaerts_proxy"  ## problemen omdat proxy alfabetisch na internal is
     depends_on:
       - mariadb
     networks:
@@ -52,9 +54,10 @@ services:
     image: bitnamilegacy/mariadb:10.11.9
     container_name: mariadb
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_USER=bn_moodle
+      - MARIADB_PASSWORD=${DATABASE_PASSWORD}
       - MARIADB_DATABASE=bitnami_moodle
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - mariadb_data:/bitnami/mariadb
     networks:
@@ -70,6 +73,7 @@ services:
       - "traefik.http.routers.ltitool.tls=true"
       - "traefik.http.services.ltitool.loadbalancer.server.port=5000"
       - "traefik.http.services.ltitool.loadbalancer.server.scheme=http" ## ltitool kan alleen maar http connectie maken op de backend
+      - "traefik.docker.network=doorlopende-projectopdracht-dylanhavelaerts_proxy"  ## problemen omdat proxy alfabetisch na internal is
     environment:
       SESSION_SECRET: ${SESSION_SECRET}
       OAUTH_SECRET: ${OAUTH_SECRET}
@@ -125,10 +129,7 @@ volumes:
 
 
 networks:
-  ## backend network (db)
   internal:
     driver: bridge
-
-  ## public
   proxy:
     external: false ## als het netwerk niet bestaat -> maak het aan
