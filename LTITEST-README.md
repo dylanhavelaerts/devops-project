@@ -6,7 +6,7 @@ In deze README.md wordt er uitgelegd hoe je een ltitool kan toevoegen aan je tes
     - tool name = (eigen keuze, wij zullen de naam: "mijntool" gebruiken)
     - tool url = http://<ip>>:5000
     - consumer key = (eigen keuze key)
-    - shared secret -> staat in .env file
+    - shared secret -> moet zelf in een .env file geplaatst worden
 - Als dit is toegevoegd ga je terug naar de cursus hoofdpagina in developer mode, hierna klik je op "Add an activity"
 - Je voegt hier nu je tool toe (mijntool)
 - Save en Display

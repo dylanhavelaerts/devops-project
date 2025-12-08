@@ -6,6 +6,8 @@ tls:
       keyFile: /certs/traefik.local-key.pem
     - certFile: /certs/ltitool.local.pem
       keyFile: /certs/ltitool.local-key.pem
+    - certFile: /certs/woodpecker.local.pem
+      keyFile: /certs/woodpecker.local-key.pem
   stores:
     default:
       defaultCertificate:

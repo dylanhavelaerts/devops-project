@@ -1,3 +1,4 @@
+## traefik - EntryPoints
 entryPoints:
   web:
     address: ":80"
@@ -10,13 +11,16 @@ entryPoints:
     address: ":443"
 
 providers:
+  ## link tot mkcerts
   file:
     directory: /etc/traefik/certificates
-    watch: true
+    watch: true ## check voor updates
+  
+  ## traefik - Traefik & Docker
   docker:
     endpoint: "unix:///var/run/docker.sock"
     exposedByDefault: false
-    watch: true
+    watch: true ## check voor updates
 
 api:
   dashboard: true
