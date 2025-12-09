@@ -1,28 +1,28 @@
 when:
-  - event: push
-    branch: main
+  event: push
+  branch: main
 
-steps:
-  - name: build-lti
-    image: docker/compose:latest ## docker compose commandos pre-installed
+pipeline:
+  build-lti:
+    image: docker/compose:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - docker compose build ltitool
 
-  - name: push-to-dockerhub
+  push-to-dockerhub:
     image: docker/compose:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    secrets: [docker_user, docker_pw]
+    secrets: [ docker_user, docker_pw ]
     commands:
-      - echo $DOCKER_PW | docker login -u $DOCKER_USER --password-stdin  ## stdin is veiliger dan docker login -u
+      - echo $DOCKER_PW | docker login -u $DOCKER_USER --password-stdin
       - docker tag doorlopende-projectopdracht-dylanhavelaerts-ltitool $DOCKER_USER/ltitool:latest
       - docker push $DOCKER_USER/ltitool:latest
     when:
       branch: main
 
-  - name: deploy
+  deploy:
     image: docker/compose:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
