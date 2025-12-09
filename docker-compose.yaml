@@ -30,7 +30,6 @@ services:
       - MOODLE_DATABASE_USER=bn_moodle
       - MOODLE_DATABASE_NAME=bitnami_moodle
       - MOODLE_DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - MARIADB_ROOT_PASSWORD=${DATABASE_PASSWORD}
       - MOODLE_SITE_NAME="Dylan Havelaerts Moodle"
       - MOODLE_SITE_URL=https://moodle.local
     volumes:
@@ -73,7 +72,7 @@ services:
       - "traefik.http.routers.ltitool.tls=true"
       - "traefik.http.services.ltitool.loadbalancer.server.port=5000"
       - "traefik.http.services.ltitool.loadbalancer.server.scheme=http" ## ltitool kan alleen maar http connectie maken op de backend
-      - "traefik.docker.network=doorlopende-projectopdracht-dylanhavelaerts_proxy"  ## problemen omdat proxy alfabetisch na internal is
+      - "traefik.docker.network=doorlopende-projectopdracht-dylanhavelaerts_proxy" ## problemen omdat proxy alfabetisch na internal is
     environment:
       SESSION_SECRET: ${SESSION_SECRET}
       OAUTH_SECRET: ${OAUTH_SECRET}
@@ -94,6 +93,9 @@ services:
       - WOODPECKER_GITHUB_CLIENT=${GITHUB_CLIENT_ID}
       - WOODPECKER_GITHUB_SECRET=${GITHUB_CLIENT_SECRET}
       - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
+      - WOODPECKER_GITHUB_WEBHOOK_SKIP=true
+      - WOODPECKER_GITHUB_WEBHOOK_DISABLE=true
+      - WOODPECKER_GIT_POLL_INTERVAL=60
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.woodpecker.rule=Host(`woodpecker.local`)"
